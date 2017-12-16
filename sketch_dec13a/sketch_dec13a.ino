@@ -7,12 +7,14 @@ Servo servo;
 Servo servoY;
 const int ServoPin = 3;
 const int ServoPinY = 4;
+const int ledZ = 5;
 
 
 void setup() {
   Serial.begin(9600);
   servo.attach(ServoPin);
   servoY.attach(ServoPinY);
+  pinMode(ledZ, OUTPUT);
   wii.init();
   wii.calibrate();
 }
@@ -54,6 +56,11 @@ void loop() {
     if(ayServo > 180){
         ayServo = 180;
       }
+    if(wii.buttonZ() > 0){
+          digitalWrite(ledZ, HIGH);
+      }else{
+        digitalWrite(ledZ, LOW);
+        }
     servo.write(axServo);
     servoY.write(ayServo);
     delay(1);
