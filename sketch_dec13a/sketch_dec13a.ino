@@ -27,6 +27,14 @@ void setup() {
   pinMode(bass, OUTPUT);
   wii.init();
   wii.calibrate();
+  digitalWrite(ledBack, HIGH);
+  digitalWrite(ledFront, HIGH);
+  delay(200);
+  tone(bass, 800);
+  delay(80);
+  tone(bass, 1000);
+  delay(200);
+  noTone(bass);
 }
 
 void lightsBlink(int l1, int l2, int l3) {
