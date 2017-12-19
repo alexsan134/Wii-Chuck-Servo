@@ -7,14 +7,24 @@ Servo servo;
 Servo servoY;
 const int ServoPin = 3;
 const int ServoPinY = 4;
-const int ledZ = 5;
+const int ledBack = 5;
+const int ledBackI = 6;
+const int ledBackD = 7;
+const int ledFront = 8;
+const int ledFrontI = 9;
+const int ledFrontD = 10;
 
 
 void setup() {
   Serial.begin(9600);
   servo.attach(ServoPin);
   servoY.attach(ServoPinY);
-  pinMode(ledZ, OUTPUT);
+  pinMode(ledBack, OUTPUT);
+  pinMode(ledBackI, OUTPUT);
+  pinMode(ledBackD, OUTPUT);
+  pinMode(ledFront, OUTPUT);
+  pinMode(ledFrontI, OUTPUT);
+  pinMode(ledFrontD, OUTPUT);
   wii.init();
   wii.calibrate();
 }
@@ -57,12 +67,64 @@ void loop() {
         ayServo = 180;
       }
     if(wii.buttonZ() > 0){
-          digitalWrite(ledZ, HIGH);
+          if(jxServo < 80){
+              digitalWrite(ledBack, HIGH);
+              digitalWrite(ledBackI, HIGH);
+              delay(300);
+              digitalWrite(ledBackI, LOW);
+              delay(300);
+            }else if(jxServo > 100){
+              digitalWrite(ledBack, HIGH);
+              digitalWrite(ledBackD, HIGH);
+              delay(300);
+              digitalWrite(ledBackD, LOW);
+              delay(300);
+              }
+               else if(jxServo > 80 && jxServo < 100){
+                digitalWrite(ledBackD, LOW);
+                digitalWrite(ledBackI, LOW);
+                digitalWrite(ledBack, HIGH);
+               }else{
+                digitalWrite(ledBack, LOW);
+               digitalWrite(ledBackI, LOW);
+         digitalWrite(ledBackD, LOW);
+                }
       }else{
-        digitalWrite(ledZ, LOW);
+        digitalWrite(ledBack, LOW);
+         digitalWrite(ledBackI, LOW);
+         digitalWrite(ledBackD, LOW);
         }
-    servo.write(axServo);
-    servoY.write(ayServo);
+
+         if(wii.buttonC() > 0){
+          if(jxServo < 80){
+              digitalWrite(ledFront, HIGH);
+              digitalWrite(ledFrontI, HIGH);
+              delay(300);
+              digitalWrite(ledFrontI, LOW);
+              delay(300);
+            }else if(jxServo > 100){
+              digitalWrite(ledFront, HIGH);
+              digitalWrite(ledFrontD, HIGH);
+              delay(300);
+              digitalWrite(ledFrontD, LOW);
+              delay(300);
+              }
+               else if(jxServo > 80 && jxServo < 100){
+                digitalWrite(ledFrontD, LOW);
+                digitalWrite(ledFrontI, LOW);
+                digitalWrite(ledFront, HIGH);
+               }else{
+                digitalWrite(ledFront, LOW);
+               digitalWrite(ledFrontI, LOW);
+         digitalWrite(ledFrontD, LOW);
+                }
+      }else{
+        digitalWrite(ledFront, LOW);
+         digitalWrite(ledFrontI, LOW);
+         digitalWrite(ledFrontD, LOW);
+        }
+      
+    servo.write(jxServo);
     delay(1);
   }
 }
