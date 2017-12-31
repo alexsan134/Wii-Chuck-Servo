@@ -5,6 +5,8 @@
 Wiichuck wii;
 Servo servo;
 Servo servoY;
+const int motorL = 2;
+const int motorR = 3;
 const int ServoPin = 4;
 const int ledBack = 5;
 const int ledBackI = 6;
@@ -13,28 +15,35 @@ const int ledFront = 8;
 const int ledFrontI = 9;
 const int ledFrontD = 10;
 const int bass = 11;
-
+const int bt = 12;
 
 void setup() {
   Serial.begin(9600);
   servo.attach(ServoPin);
   pinMode(ledBack, OUTPUT);
+  pinMode(bt, OUTPUT);
   pinMode(ledBackI, OUTPUT);
   pinMode(ledBackD, OUTPUT);
   pinMode(ledFront, OUTPUT);
   pinMode(ledFrontI, OUTPUT);
   pinMode(ledFrontD, OUTPUT);
+  pinMode(motorL, OUTPUT);
+  pinMode(motorR, OUTPUT);
   pinMode(bass, OUTPUT);
+  pinMode(13, OUTPUT);
   wii.init();
   wii.calibrate();
   digitalWrite(ledBack, HIGH);
   digitalWrite(ledFront, HIGH);
+  digitalWrite(13, LOW);
   delay(200);
   tone(bass, 800);
   delay(80);
   tone(bass, 1000);
   delay(200);
   noTone(bass);
+  delay(3000);
+  digitalWrite(bt, HIGH);
 }
 
 void lightsBlink(int l1, int l2, int l3) {
@@ -84,6 +93,7 @@ void lightsTurn(int es) {
 }
 
 void loop() {
+
   if (wii.poll()) {
     int joyX = wii.joyX();
     int joyY = wii.joyY();
@@ -121,6 +131,8 @@ void loop() {
     }
 
     if (wii.buttonZ() > 0) {
+      digitalWrite(motorL, LOW);
+        digitalWrite(motorR, LOW);
       if (jyServo < 150) {
         if (jxServo < 80) {
           lightsLeft(ledBack, ledBackI, ledBackD);
@@ -159,6 +171,18 @@ void loop() {
     } else {
       lightsTurn(ledFront);
     }
+    if(jyServo > 120){
+        digitalWrite(motorL, HIGH);
+        digitalWrite(motorR, LOW);
+      }
+      else if(jyServo < 60){
+        digitalWrite(motorL, LOW);
+        digitalWrite(motorR, HIGH);
+      }
+      else{
+        digitalWrite(motorL, LOW);
+        digitalWrite(motorR, LOW);
+        }
     servo.write(axServo);
     delay(1);
   }
