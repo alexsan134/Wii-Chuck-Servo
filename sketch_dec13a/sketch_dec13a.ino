@@ -15,13 +15,14 @@ const int ledFront = 8;
 const int ledFrontI = 9;
 const int ledFrontD = 10;
 const int bass = 11;
-const int bt = 12;
+const int changeUp = 12;
+int state = 0;
 
 void setup() {
   Serial.begin(9600);
   servo.attach(ServoPin);
   pinMode(ledBack, OUTPUT);
-  pinMode(bt, OUTPUT);
+  pinMode(changeUp, INPUT);
   pinMode(ledBackI, OUTPUT);
   pinMode(ledBackD, OUTPUT);
   pinMode(ledFront, OUTPUT);
@@ -44,6 +45,8 @@ void setup() {
   noTone(bass);
   delay(3000);
   digitalWrite(bt, HIGH);
+    digitalWrite(ledBack, LOW);
+  digitalWrite(ledFront, LOW);
 }
 
 void lightsBlink(int l1, int l2, int l3) {
@@ -93,7 +96,7 @@ void lightsTurn(int es) {
 }
 
 void loop() {
-
+/*
   if (wii.poll()) {
     int joyX = wii.joyX();
     int joyY = wii.joyY();
@@ -186,4 +189,60 @@ void loop() {
     servo.write(axServo);
     delay(1);
   }
+*/
+  if(Serial.available() > 0){
+       state = Serial.read();
+  } 
+
+ if (state == '0') {
+  lightsTurn(ledFront);
+  lightsTurn(ledBack);
+    servo.write(60);
+ }
+ else if (state == '1') {
+   lightsTurn(ledFront);
+  lightsTurn(ledBack);
+     servo.write(110);
+ }
+ else if (state == '2') {
+    lightsOff(ledFront);
+ }
+ else if (state == '3') {
+   lightsOff(ledFront);
+    lightsTurn(ledFront);
+    lightsLeft(ledFront, ledFrontI, ledFrontD);
+ }
+ else if (state == '4') {
+   lightsOff(ledFront);
+    lightsTurn(ledFront);
+    lightsRight(ledFront, ledFrontI, ledFrontD);
+ }
+ else if (state == '5') {
+      lightsOff(ledFront);
+    lightsTurn(ledFront);
+ }
+
+
+
+ else if (state == '6') {
+    lightsOff(ledBack);
+ }
+ else if (state == '7') {
+   lightsOff(ledBack);
+    lightsTurn(ledBack);
+    lightsLeft(ledBack, ledBackI, ledBackD);
+ }
+ else if (state == '8') {
+   lightsOff(ledBack);
+    lightsTurn(ledBack);
+    lightsRight(ledBack, ledBackI, ledBackD);
+ }
+ else if (state == '9') {
+      lightsOff(ledBack);
+    lightsTurn(ledBack);
+ }
+ 
+delay(10);
+
+
 }
