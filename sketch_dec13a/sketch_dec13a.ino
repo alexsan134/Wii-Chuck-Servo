@@ -44,7 +44,7 @@ void setup() {
   delay(200);
   noTone(bass);
   delay(3000);
-  digitalWrite(bt, HIGH);
+  digitalWrite(changeUp, HIGH);
     digitalWrite(ledBack, LOW);
   digitalWrite(ledFront, LOW);
 }
@@ -194,15 +194,12 @@ void loop() {
        state = Serial.read();
   } 
 
- if (state == '0') {
-  lightsTurn(ledFront);
-  lightsTurn(ledBack);
-    servo.write(60);
- }
+
  else if (state == '1') {
    lightsTurn(ledFront);
   lightsTurn(ledBack);
-     servo.write(110);
+   digitalWrite(motorL, HIGH);
+   digitalWrite(motorR, LOW);
  }
  else if (state == '2') {
     lightsOff(ledFront);
@@ -226,6 +223,8 @@ void loop() {
 
  else if (state == '6') {
     lightsOff(ledBack);
+    digitalWrite(motorL, LOW);
+        digitalWrite(motorR, HIGH);
  }
  else if (state == '7') {
    lightsOff(ledBack);
@@ -241,6 +240,8 @@ void loop() {
       lightsOff(ledBack);
     lightsTurn(ledBack);
  }
+
+
  
 delay(10);
 
