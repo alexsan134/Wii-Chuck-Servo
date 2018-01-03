@@ -61,23 +61,25 @@ void lightsBlink(int l1, int l2, int l3) {
   delay(100);
 }
 
-void lightsLeft(int ll1, int ll2, int ll3) {
+void lightsLeft() {
   tone(bass, 300);
-  digitalWrite(ll1, HIGH);
-  digitalWrite(ll2, HIGH);
+  digitalWrite(ledBackI, HIGH);
+  digitalWrite(ledFrontI, HIGH);
   delay(300);
   noTone(bass);
-  digitalWrite(ll2, LOW);
+  digitalWrite(ledFrontI, LOW);
+  digitalWrite(ledBackI, LOW);
   delay(300);
 }
 
-void lightsRight(int lr1, int lr2, int lr3) {
+void lightsRight() {
   tone(bass, 300);
-  digitalWrite(lr1, HIGH);
-  digitalWrite(lr3, HIGH);
+  digitalWrite(ledBackD, HIGH);
+  digitalWrite(ledFrontD, HIGH);
   delay(300);
   noTone(bass);
-  digitalWrite(lr3, LOW);
+  digitalWrite(ledBackD, LOW);
+  digitalWrite(ledFrontD, LOW);
   delay(300);
 }
 void lightsOff(int e) {
@@ -96,7 +98,11 @@ void lightsTurn(int es) {
 }
 
 void loop() {
-/*
+    if(Serial.available() > 0){
+       state = Serial.read();
+  } 
+  if(digitalRead(changeUp) == HIGH){
+
   if (wii.poll()) {
     int joyX = wii.joyX();
     int joyY = wii.joyY();
@@ -134,68 +140,49 @@ void loop() {
     }
 
     if (wii.buttonZ() > 0) {
-      digitalWrite(motorL, LOW);
-        digitalWrite(motorR, LOW);
-      if (jyServo < 150) {
-        if (jxServo < 80) {
-          lightsLeft(ledBack, ledBackI, ledBackD);
-        } else if (jxServo > 100) {
-          lightsRight(ledBack, ledBackI, ledBackD);
-        }
-        else if (jxServo > 10 && jxServo < 170) {
-          lightsOff(ledBack);
-        } else {
-          lightsTurn(ledBack);
-        }
-
-      } else {
-        lightsBlink(ledBack, ledBackI, ledBackD);
+      lightsOff(ledBack);
+    lightsTurn(ledFront);
+    digitalWrite(motorL, LOW);
+   digitalWrite(motorR, HIGH);
+   if(jxServo < 60){
+        lightsLeft();
+    }
+    else if (jxServo > 120){
+        lightsRight();
       }
+      else if(jxServo > 60 &&  jxServo < 120){
+          lightsOff(ledBack);
+        }
     } else {
       lightsTurn(ledBack);
+      digitalWrite(motorL, LOW);
+   digitalWrite(motorR, LOW);
     }
+    
 
     if (wii.buttonC() > 0) {
-      if (jyServo < 150) {
-        if (jxServo < 80) {
-          lightsLeft(ledFront, ledFrontI, ledFrontD);
-        } else if (jxServo > 100) {
-          lightsRight(ledFront, ledFrontI, ledFrontD);
-        }
-        else if (jxServo > 10 && jxServo < 170) {
+       lightsOff(ledFront);
+    lightsTurn(ledBack);
+   if(jxServo < 60){
+        lightsLeft();
+    }
+    else if (jxServo > 120){
+        lightsRight();
+      }
+      else if(jxServo > 60 &&  jxServo < 120){
           lightsOff(ledFront);
-        } else {
-          lightsTurn(ledFront);
         }
-      }
-      else {
-        lightsBlink(ledFront, ledFrontI, ledFrontD);
-      }
     } else {
       lightsTurn(ledFront);
+      digitalWrite(motorL, LOW);
+   digitalWrite(motorR, LOW);
     }
-    if(jyServo > 120){
-        digitalWrite(motorL, HIGH);
-        digitalWrite(motorR, LOW);
-      }
-      else if(jyServo < 60){
-        digitalWrite(motorL, LOW);
-        digitalWrite(motorR, HIGH);
-      }
-      else{
-        digitalWrite(motorL, LOW);
-        digitalWrite(motorR, LOW);
-        }
     servo.write(axServo);
-    delay(1);
   }
-*/
-  if(Serial.available() > 0){
-       state = Serial.read();
-  } 
+  }else{
 
 
- else if (state == '1') {
+ if (state == '1') {
    lightsTurn(ledFront);
   lightsTurn(ledBack);
    digitalWrite(motorL, HIGH);
@@ -204,46 +191,37 @@ void loop() {
  else if (state == '2') {
     lightsOff(ledFront);
  }
+
  else if (state == '3') {
-   lightsOff(ledFront);
+    lightsTurn(ledBack);
     lightsTurn(ledFront);
-    lightsLeft(ledFront, ledFrontI, ledFrontD);
+    digitalWrite(motorL, LOW);
+   digitalWrite(motorR, LOW);
  }
- else if (state == '4') {
-   lightsOff(ledFront);
+ 
+ else if (state == '4') { 
+   lightsOff(ledBack);
     lightsTurn(ledFront);
-    lightsRight(ledFront, ledFrontI, ledFrontD);
+    digitalWrite(motorL, LOW);
+   digitalWrite(motorR, HIGH);
  }
  else if (state == '5') {
-      lightsOff(ledFront);
+    lightsTurn(ledBack);
     lightsTurn(ledFront);
+    digitalWrite(motorL, LOW);
+   digitalWrite(motorR, LOW);
  }
 
 
 
  else if (state == '6') {
-    lightsOff(ledBack);
-    digitalWrite(motorL, LOW);
-        digitalWrite(motorR, HIGH);
+    lightsLeft();
  }
  else if (state == '7') {
-   lightsOff(ledBack);
-    lightsTurn(ledBack);
-    lightsLeft(ledBack, ledBackI, ledBackD);
- }
- else if (state == '8') {
-   lightsOff(ledBack);
-    lightsTurn(ledBack);
-    lightsRight(ledBack, ledBackI, ledBackD);
- }
- else if (state == '9') {
-      lightsOff(ledBack);
-    lightsTurn(ledBack);
+lightsRight();
  }
 
-
- 
 delay(10);
-
+  }
 
 }
